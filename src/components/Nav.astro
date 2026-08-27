@@ -1,0 +1,116 @@
+---
+const navLinks = [
+  { href: '/#about',      label: 'About' },
+  { href: '/#skills',     label: 'Skills' },
+  { href: '/#workflow',   label: 'Workflow' },
+  { href: '/#experience', label: 'Experience' },
+  { href: '/#projects',   label: 'Projects' },
+  { href: '/blog',        label: 'Blog' },
+];
+---
+
+<header class="nav-header" role="banner">
+  <div class="container nav-inner">
+    <a href="/" class="nav-logo" aria-label="Home">
+      <span class="nav-mark">TM</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <ul class="nav-links" role="list">
+        {navLinks.map(({ href, label }) => (
+          <li><a href={href}>{label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <a href="/#contact" class="nav-cta">Contact</a>
+  </div>
+</header>
+
+<style>
+.nav-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: color-mix(in srgb, var(--color-bg) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding-block: 0.85rem;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  margin-right: auto;
+}
+
+.nav-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 7px;
+  background-color: var(--color-accent);
+  color: var(--color-surface);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  transition: background-color 0.15s;
+}
+
+.nav-logo:hover .nav-mark {
+  background-color: var(--color-accent-hover);
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.nav-links a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.nav-links a:hover {
+  color: var(--color-text);
+}
+
+.nav-links a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.nav-cta {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  padding: 0.4em 0.9em;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.nav-cta:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+@media (max-width: 720px) {
+  .nav-links { display: none; }
+  .nav-inner { justify-content: space-between; }
+}
+</style>

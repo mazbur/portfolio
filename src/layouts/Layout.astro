@@ -1,0 +1,78 @@
+---
+import '@fontsource-variable/inter/wght.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title = 'Tejas Mehta — DevOps Engineer · Azure Cloud · IaC',
+  description = 'DevOps engineer with 3+ years in Azure Cloud, CI/CD automation, and Terraform IaC. Reduced release cycles 45%, environment provisioning from 4 days to 2 hours.',
+  ogImage = '/og-image.png',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://localhost');
+const ogImageURL  = new URL(ogImage, Astro.site ?? 'https://localhost');
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Tejas Mehta',
+  jobTitle: 'DevOps Engineer',
+  url: String(Astro.site ?? ''),
+  sameAs: [
+    'https://github.com/YOUR_GITHUB',       // TODO: replace
+    'https://linkedin.com/in/YOUR_LINKEDIN', // TODO: replace
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content={String(canonicalURL)} />
+    <meta property="og:title"       content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image"       content={String(ogImageURL)} />
+
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image"       content={String(ogImageURL)} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  </head>
+  <body>
+    <slot />
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+      );
+      document.querySelectorAll('[data-animate]').forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>

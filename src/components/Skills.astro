@@ -1,0 +1,63 @@
+---
+const skillGroups = [
+  {
+    category: 'Cloud (Azure)',
+    tools: ['AKS', 'ACR', 'Key Vault', 'Event Grid/Hubs', 'Storage Accounts', 'Azure VMs', 'VNet', 'Private Endpoints'],
+  },
+  { category: 'IaC & Containers', tools: ['Terraform', 'Helm', 'Docker', 'Kubernetes'] },
+  { category: 'CI/CD',            tools: ['Azure DevOps', 'Maven', 'Git'] },
+  { category: 'Observability',    tools: ['Application Insights', 'ELK Stack'] },
+  { category: 'DevSecOps',        tools: ['OPA/Rego', 'Gatekeeper', 'SonarQube', 'Snyk', 'InfraCost'] },
+  { category: 'Languages',        tools: ['Python', 'Bash/Shell', 'Linux (RHEL/Ubuntu)'] },
+];
+---
+
+<section id="skills" class="section">
+  <div class="container">
+    <div data-animate>
+      <p class="section-label">Toolbox</p>
+      <h2 class="section-heading">Skills &amp; Technologies</h2>
+    </div>
+    <div class="skills-grid">
+      {skillGroups.map(({ category, tools }, i) => (
+        <div class="skill-group card" data-animate style={`transition-delay: ${i * 0.05}s`}>
+          <p class="skill-category">{category}</p>
+          <div class="skill-tags">
+            {tools.map((tool) => <span class="tag">{tool}</span>)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+.section {
+  padding-block: var(--section-pad);
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.skill-group {
+  padding: 1.35rem 1.5rem;
+}
+
+.skill-category {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  margin-bottom: 0.9rem;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+</style>

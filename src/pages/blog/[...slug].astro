@@ -1,0 +1,164 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Layout title={`${post.data.title} — Tejas Mehta`} description={post.data.description}>
+  <Nav />
+  <main class="post">
+    <div class="container">
+      <a href="/blog" class="post-back">&larr; All posts</a>
+      <article>
+        <header class="post-header">
+          <div class="post-meta">
+            <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+            {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+          </div>
+          <h1>{post.data.title}</h1>
+          <p class="post-lede">{post.data.description}</p>
+        </header>
+        <div class="prose">
+          <Content />
+        </div>
+      </article>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+.post {
+  padding-block: clamp(2rem, 5vw, 3rem) var(--section-pad);
+}
+
+.post .container {
+  max-width: 720px;
+}
+
+.post-back {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 2.5rem;
+}
+
+.post-back:hover {
+  color: var(--color-accent);
+}
+
+.post-header {
+  margin-bottom: 2.5rem;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+.post-header h1 {
+  font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.6rem);
+  margin-bottom: 0.9rem;
+}
+
+.post-lede {
+  font-size: 1.15rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+</style>
+
+<style is:global>
+.prose {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--color-text);
+}
+
+.prose > * + * {
+  margin-top: 1.25rem;
+}
+
+.prose h2 {
+  font-size: 1.5rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose h3 {
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
+
+.prose p,
+.prose li {
+  color: var(--color-text);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4rem;
+}
+
+.prose li + li {
+  margin-top: 0.4rem;
+}
+
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background-color: var(--color-bg-alt);
+  padding: 0.15em 0.4em;
+  border-radius: 5px;
+}
+
+.prose pre {
+  background-color: #2B2925;
+  color: #F4EFE6;
+  padding: 1.25rem 1.4rem;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+.prose blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 1.1rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+</style>

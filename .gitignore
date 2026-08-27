@@ -1,0 +1,30 @@
+# Build output
+dist/
+.astro/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/crash.log
+terraform/terraform.tfvars
+.terraform.lock.hcl
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Editor
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

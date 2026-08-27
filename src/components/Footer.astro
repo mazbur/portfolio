@@ -1,0 +1,64 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p class="footer-copy">&copy; {year} Tejas Mehta</p>
+    <p class="footer-built">
+      Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
+      &middot; hosted on <a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">AWS</a>
+      &middot; <a href="https://github.com/YOUR_GITHUB/portfolio" target="_blank" rel="noopener noreferrer">source</a>
+    </p>
+    <a href="#home" class="footer-top" aria-label="Back to top">&uarr; top</a>
+  </div>
+</footer>
+
+<style>
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  padding-block: 1.75rem;
+  background-color: var(--color-bg-alt);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.footer-copy {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.footer-built {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.footer-built a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-border);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.footer-built a:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.footer-top {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.footer-top:hover {
+  color: var(--color-accent);
+}
+</style>

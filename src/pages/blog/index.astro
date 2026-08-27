@@ -1,0 +1,128 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<Layout
+  title="Blog — Tejas Mehta"
+  description="Notes on DevOps, Azure, Terraform, and cloud infrastructure by Tejas Mehta."
+>
+  <Nav />
+  <main class="blog-index">
+    <div class="container">
+      <header class="blog-index-head">
+        <p class="section-label">Writing</p>
+        <h1>Blog</h1>
+        <p class="blog-index-sub">
+          Notes on DevOps, Azure, Terraform, and the automation that keeps systems boring.
+        </p>
+      </header>
+      <ul class="post-list" role="list">
+        {posts.map((post) => (
+          <li>
+            <a href={`/blog/${post.id}/`} class="post-row">
+              <div class="post-row-main">
+                <h2 class="post-row-title">{post.data.title}</h2>
+                <p class="post-row-desc">{post.data.description}</p>
+                <div class="post-row-tags">
+                  {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+                </div>
+              </div>
+              <time class="post-row-date" datetime={post.data.pubDate.toISOString()}>
+                {fmt(post.data.pubDate)}
+              </time>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+.blog-index {
+  padding-block: clamp(2.5rem, 6vw, 4rem) var(--section-pad);
+}
+
+.blog-index-head {
+  margin-bottom: 3rem;
+}
+
+.blog-index-head h1 {
+  margin-block: 0.5rem 0.75rem;
+}
+
+.blog-index-sub {
+  color: var(--color-text-muted);
+  max-width: 52ch;
+}
+
+.post-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--color-border);
+  color: inherit;
+}
+
+.post-list li:last-child .post-row {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.post-row:hover {
+  color: inherit;
+}
+
+.post-row:hover .post-row-title {
+  color: var(--color-accent);
+}
+
+.post-row-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.4rem;
+  transition: color 0.15s;
+}
+
+.post-row-desc {
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-bottom: 0.85rem;
+  max-width: 60ch;
+}
+
+.post-row-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.post-row-date {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.35rem;
+}
+
+@media (max-width: 640px) {
+  .post-row { flex-direction: column-reverse; gap: 0.75rem; }
+}
+</style>
