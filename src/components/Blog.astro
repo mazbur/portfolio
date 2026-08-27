@@ -1,12 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
+import { getPublishedPosts, formatDate } from '../lib/posts';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
-  .slice(0, 3);
-
-const fmt = (d: Date) =>
-  d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+const posts = (await getPublishedPosts()).slice(0, 3);
 ---
 
 <section id="blog" class="band">
@@ -26,7 +21,8 @@ const fmt = (d: Date) =>
         <li data-animate style={`transition-delay: ${i * 0.06}s`}>
           <a href={`/blog/${post.id}/`} class="blog-item brutal brutal-press">
             <div class="blog-meta">
-              <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+              <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+              {post.data.draft && <span class="tag tag-draft">Draft</span>}
               {post.data.tags[0] && <span class="tag">{post.data.tags[0]}</span>}
             </div>
             <h3 class="blog-title">{post.data.title}</h3>

@@ -1,21 +1,29 @@
 ---
-// TODO: Add year and paste your Credly verify URLs
-const certifications = [
+// `year` and `verifyUrl` are optional — leave them null until you have the
+// Credly badge URL, and the corresponding UI simply won't render.
+const certifications: {
+  name: string;
+  level: string;
+  year: string | null;
+  issuer: string;
+  color: string;
+  verifyUrl: string | null;
+}[] = [
   {
     name: 'Azure Administrator Associate',
     level: 'AZ-104',
-    year: '[Year]',
+    year: null,
     issuer: 'Microsoft',
     color: 'var(--c-teal)',
-    verifyUrl: '#',
+    verifyUrl: null,
   },
   {
     name: 'Azure Fundamentals',
     level: 'AZ-900',
-    year: '[Year]',
+    year: null,
     issuer: 'Microsoft',
     color: 'var(--c-indigo)',
-    verifyUrl: '#',
+    verifyUrl: null,
   },
 ];
 ---
@@ -40,16 +48,18 @@ const certifications = [
             <h3 class="cert-name">{cert.name}</h3>
             <div class="cert-meta">
               <span class="tag">{cert.level}</span>
-              <span class="cert-year">{cert.year}</span>
+              {cert.year && <span class="cert-year">{cert.year}</span>}
             </div>
           </div>
-          <a
-            href={cert.verifyUrl}
-            class="cert-verify"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Verify ${cert.name} certificate`}
-          >Verify &rarr;</a>
+          {cert.verifyUrl && (
+            <a
+              href={cert.verifyUrl}
+              class="cert-verify"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Verify ${cert.name} certificate`}
+            >Verify &rarr;</a>
+          )}
         </li>
       ))}
     </ul>

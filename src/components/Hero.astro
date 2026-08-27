@@ -1,4 +1,6 @@
 ---
+import { site } from '../site';
+
 const metrics = [
   { value: '45%',  label: 'Faster release cycles',  color: 'var(--c-coral)'  },
   { value: '99%',  label: 'AKS deploy success',     color: 'var(--c-teal)'   },
@@ -25,11 +27,11 @@ const metrics = [
         actually trust.
       </p>
       <div class="hero-links">
-        <a href="mailto:official.tejas27@outlook.com" class="btn btn-primary">
+        <a href={`mailto:${site.email}`} class="btn btn-primary">
           Get in touch
         </a>
         <a
-          href="/resume.pdf"
+          href={site.resume}
           class="btn btn-outline"
           download
           aria-label="Download resume as PDF"

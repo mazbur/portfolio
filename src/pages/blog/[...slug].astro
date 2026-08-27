@@ -2,10 +2,11 @@
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
+import { getPublishedPosts, formatDate } from '../../lib/posts';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const posts = await getPublishedPosts();
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -14,9 +15,6 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-
-const fmt = (d: Date) =>
-  d.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
 <Layout title={`${post.data.title} — Tejas Mehta`} description={post.data.description}>
@@ -27,7 +25,8 @@ const fmt = (d: Date) =>
       <article>
         <header class="post-header">
           <div class="post-meta">
-            <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+            <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate, true)}</time>
+            {post.data.draft && <span class="tag tag-draft">Draft</span>}
             {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
           </div>
           <h1>{post.data.title}</h1>

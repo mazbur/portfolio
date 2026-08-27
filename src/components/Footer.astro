@@ -1,7 +1,11 @@
 ---
+import { site, socialLinks } from '../site';
+
 const year = new Date().getFullYear();
 
-const columns = [
+type FooterLink = { label: string; href: string; external?: boolean };
+
+const columns: { heading: string; links: FooterLink[] }[] = [
   {
     heading: 'Site',
     links: [
@@ -15,15 +19,15 @@ const columns = [
     heading: 'Writing',
     links: [
       { label: 'All posts',      href: '/blog' },
+      { label: 'RSS feed',       href: '/rss.xml' },
     ],
   },
   {
     heading: 'Elsewhere',
     links: [
-      { label: 'GitHub',   href: 'https://github.com/mazbur',            external: true },
-      { label: 'LinkedIn', href: 'https://linkedin.com/in/YOUR_LINKEDIN', external: true },
-      { label: 'Email',    href: 'mailto:official.tejas27@outlook.com' },
-      { label: 'Resume',   href: '/resume.pdf' },
+      ...socialLinks.map((l) => ({ ...l, external: true })),
+      { label: 'Email',  href: `mailto:${site.email}` },
+      { label: 'Resume', href: site.resume },
     ],
   },
 ];
@@ -35,7 +39,7 @@ const columns = [
       <div class="footer-brand">
         <span class="footer-mark">TM</span>
         <p class="footer-tagline">
-          DevOps engineer building automated,<br />
+          {site.role} building automated,<br />
           reproducible cloud infrastructure.
         </p>
       </div>
@@ -57,11 +61,11 @@ const columns = [
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; {year} Tejas Mehta</p>
+      <p>&copy; {year} {site.name}</p>
       <p class="footer-built">
         Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>,
-        hosted on <a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">AWS</a>,
-        <a href="https://github.com/mazbur/portfolio" target="_blank" rel="noopener noreferrer">source on GitHub</a>
+        hosted on <a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">AWS</a>,{' '}
+        <a href={site.repo} target="_blank" rel="noopener noreferrer">source on GitHub</a>
       </p>
       <a href="#home" class="footer-top">&uarr; Top</a>
     </div>

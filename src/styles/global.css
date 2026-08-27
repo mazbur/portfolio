@@ -8,7 +8,6 @@
   --color-bg:           #F4EFE6;
   --color-bg-alt:       #EEEAE1;
   --color-surface:      #FBF8F2;
-  --color-surface-warm: #F4F0E7;
 
   /* Ink */
   --color-text:         #2B2926;
@@ -39,9 +38,6 @@
 
   --content-width: 1120px;
   --section-pad: clamp(3.5rem, 7vw, 6rem);
-
-  /* Neobrutalism: no rounding, anywhere. */
-  --radius: 0;
 }
 
 /* ============================================================
@@ -278,6 +274,15 @@ section {
   font-weight: 500;
   color: var(--color-text);
   white-space: nowrap;
+}
+
+/* Draft marker — only ever rendered by `npm run dev`. */
+.tag-draft {
+  background-color: var(--c-amber);
+  color: var(--color-text);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 /* ============================================================

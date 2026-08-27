@@ -1,4 +1,6 @@
 ---
+import { site } from '../site';
+
 const projects = [
   {
     title: 'Terraform Drift Detection',
@@ -6,7 +8,7 @@ const projects = [
     description:
       'Python tool that polls Terraform state and compares it against live Azure resources, alerting on configuration drift before it becomes an incident. Cut drift incidents 70% and prevented two critical outages.',
     tags: ['Python', 'Terraform', 'Azure', 'Azure DevOps'],
-    links: [{ label: 'GitHub', href: 'https://github.com/YOUR_GITHUB/terraform-drift-detector' }],
+    links: site.github ? [{ label: 'GitHub', href: `${site.github}/terraform-drift-detector` }] : [],
   },
   {
     title: 'Policy-as-Code Platform',
@@ -22,7 +24,7 @@ const projects = [
     description:
       'Static Astro site on a private S3 bucket behind CloudFront. Infrastructure fully described in Terraform; zero long-lived AWS keys thanks to GitHub Actions OIDC. Initial payload under 100 KB.',
     tags: ['Astro', 'Terraform', 'AWS', 'GitHub Actions'],
-    links: [{ label: 'GitHub', href: 'https://github.com/mazbur/portfolio' }],
+    links: [{ label: 'GitHub', href: site.repo }],
   },
 ];
 ---
