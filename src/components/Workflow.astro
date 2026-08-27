@@ -3,38 +3,47 @@ const steps = [
   {
     n: '01',
     title: 'Design',
-    body: 'Map requirements to a reproducible architecture. Define modules, environments, and guardrails before a single resource is provisioned.',
+    color: 'var(--c-coral)',
+    body: 'Map requirements to a reproducible architecture. Modules, environments, and guardrails get defined before a single resource is provisioned.',
   },
   {
     n: '02',
     title: 'Codify',
+    color: 'var(--c-indigo)',
     body: 'Everything as code — Terraform for infra, Helm for workloads, OPA/Rego for policy. Reviewed in PRs, versioned, and cost-estimated up front.',
   },
   {
     n: '03',
     title: 'Automate',
-    body: 'End-to-end CI/CD in Azure DevOps with security and quality gates. Deployment gating, drift detection, and self-service pipelines that teams trust.',
+    color: 'var(--c-teal)',
+    body: 'End-to-end CI/CD with security and quality gates. Deployment gating, drift detection, and self-service pipelines teams actually trust.',
   },
   {
     n: '04',
     title: 'Observe',
-    body: 'Close the loop with Application Insights and the ELK stack. Autoscaling, alerting, and continuous tuning to keep systems fast and on-call quiet.',
+    color: 'var(--c-amber)',
+    body: 'Close the loop with Application Insights and the ELK stack. Autoscaling, alerting, and continuous tuning to keep on-call quiet.',
   },
 ];
 ---
 
-<section id="workflow" class="section-alt">
+<section id="workflow" class="band band-alt">
   <div class="container">
     <div data-animate>
       <p class="section-label">Process</p>
-      <h2 class="section-heading">How I work</h2>
+      <h2 class="section-heading">
+        Four steps.<br />
+        <span class="muted">No surprises.</span>
+      </h2>
     </div>
     <ol class="workflow" role="list">
       {steps.map((step, i) => (
-        <li class="workflow-step" data-animate style={`transition-delay: ${i * 0.08}s`}>
-          <div class="workflow-num" aria-hidden="true">{step.n}</div>
-          <h3 class="workflow-title">{step.title}</h3>
-          <p class="workflow-body">{step.body}</p>
+        <li class="step-card brutal brutal-press" data-animate style={`transition-delay: ${i * 0.07}s`}>
+          <span class="brutal-chip step-chip" style={`--chip-color: ${step.color}`} aria-hidden="true">
+            {step.n}
+          </span>
+          <h3 class="step-title">{step.title}</h3>
+          <p class="step-body">{step.body}</p>
         </li>
       ))}
     </ol>
@@ -42,61 +51,41 @@ const steps = [
 </section>
 
 <style>
-.section-alt {
-  padding-block: var(--section-pad);
-  background-color: var(--color-bg-alt);
-}
-
 .workflow {
   list-style: none;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
-  counter-reset: none;
+  gap: 1.5rem;
 }
 
-.workflow-step {
-  position: relative;
-  padding-top: 1.5rem;
-  border-top: 2px solid var(--color-border);
+.step-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.6rem 1.4rem;
 }
 
-/* Connector dot sitting on the top rule */
-.workflow-step::before {
-  content: '';
-  position: absolute;
-  top: -6px;
-  left: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: var(--color-accent);
+.step-chip {
+  font-size: 0.95rem;
+  margin-bottom: 1.15rem;
+  box-shadow: 3px 3px 0 var(--brutal-shadow);
 }
 
-.workflow-num {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--color-accent);
-  margin-bottom: 0.65rem;
+.step-title {
+  font-size: 1.2rem;
+  margin-bottom: 0.55rem;
 }
 
-.workflow-title {
-  font-size: 1.15rem;
-  margin-bottom: 0.5rem;
-}
-
-.workflow-body {
-  font-size: 0.92rem;
+.step-body {
+  font-size: 0.88rem;
   color: var(--color-text-muted);
   line-height: 1.6;
 }
 
-@media (max-width: 860px) {
-  .workflow { grid-template-columns: repeat(2, 1fr); gap: 1.75rem; }
+@media (max-width: 1000px) {
+  .workflow { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
   .workflow { grid-template-columns: 1fr; }
 }
 </style>

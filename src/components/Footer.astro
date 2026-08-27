@@ -1,64 +1,174 @@
 ---
 const year = new Date().getFullYear();
+
+const columns = [
+  {
+    heading: 'Site',
+    links: [
+      { label: 'About',          href: '/#about' },
+      { label: 'Skills',         href: '/#skills' },
+      { label: 'Workflow',       href: '/#workflow' },
+      { label: 'Projects',       href: '/#projects' },
+    ],
+  },
+  {
+    heading: 'Writing',
+    links: [
+      { label: 'All posts',      href: '/blog' },
+    ],
+  },
+  {
+    heading: 'Elsewhere',
+    links: [
+      { label: 'GitHub',   href: 'https://github.com/mazbur',            external: true },
+      { label: 'LinkedIn', href: 'https://linkedin.com/in/YOUR_LINKEDIN', external: true },
+      { label: 'Email',    href: 'mailto:official.tejas27@outlook.com' },
+      { label: 'Resume',   href: '/resume.pdf' },
+    ],
+  },
+];
 ---
 
 <footer class="site-footer">
-  <div class="container footer-inner">
-    <p class="footer-copy">&copy; {year} Tejas Mehta</p>
-    <p class="footer-built">
-      Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
-      &middot; hosted on <a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">AWS</a>
-      &middot; <a href="https://github.com/YOUR_GITHUB/portfolio" target="_blank" rel="noopener noreferrer">source</a>
-    </p>
-    <a href="#home" class="footer-top" aria-label="Back to top">&uarr; top</a>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="footer-mark">TM</span>
+        <p class="footer-tagline">
+          DevOps engineer building automated,<br />
+          reproducible cloud infrastructure.
+        </p>
+      </div>
+      {columns.map((col) => (
+        <nav class="footer-col" aria-label={col.heading}>
+          <h2 class="footer-heading">{col.heading}</h2>
+          <ul role="list">
+            {col.links.map(({ label, href, external }) => (
+              <li>
+                <a
+                  href={href}
+                  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >{label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {year} Tejas Mehta</p>
+      <p class="footer-built">
+        Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>,
+        hosted on <a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">AWS</a>,
+        <a href="https://github.com/mazbur/portfolio" target="_blank" rel="noopener noreferrer">source on GitHub</a>
+      </p>
+      <a href="#home" class="footer-top">&uarr; Top</a>
+    </div>
   </div>
 </footer>
 
 <style>
 .site-footer {
-  border-top: 1px solid var(--color-border);
-  padding-block: 1.75rem;
-  background-color: var(--color-bg-alt);
+  background-color: var(--color-text);
+  color: var(--color-text-invert);
+  padding-block: clamp(2.5rem, 5vw, 3.5rem) 1.5rem;
 }
 
-.footer-inner {
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+  gap: 2rem;
+  padding-bottom: 2.25rem;
+  border-bottom: var(--bw-sm) solid #4A463F;
+}
+
+.footer-mark {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: var(--bw-sm) solid var(--color-text-invert);
+  background-color: var(--color-accent);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.footer-tagline {
+  font-size: 0.86rem;
+  color: #A79E8E;
+  line-height: 1.6;
+}
+
+.footer-heading {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #A79E8E;
+  margin-bottom: 0.9rem;
+}
+
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer-col a {
+  font-size: 0.88rem;
+  color: var(--color-text-invert);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.footer-col a:hover {
+  color: var(--color-accent);
+}
+
+.footer-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.5rem 1.5rem;
+  padding-top: 1.5rem;
+  font-size: 0.8rem;
+  color: #A79E8E;
 }
 
-.footer-copy {
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
-}
-
-.footer-built {
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
-}
-
-.footer-built a {
-  color: var(--color-text-muted);
+.footer-built a,
+.footer-top {
+  color: var(--color-text-invert);
   text-decoration: none;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #4A463F;
   transition: color 0.15s, border-color 0.15s;
 }
 
-.footer-built a:hover {
+.footer-built a:hover,
+.footer-top:hover {
   color: var(--color-accent);
   border-color: var(--color-accent);
 }
 
 .footer-top {
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
-  text-decoration: none;
-  transition: color 0.15s;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-bottom: none;
 }
 
-.footer-top:hover {
-  color: var(--color-accent);
+@media (max-width: 800px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 1.75rem; }
 }
 </style>

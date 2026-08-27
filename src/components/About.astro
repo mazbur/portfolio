@@ -1,40 +1,132 @@
 ---
+const proof = [
+  {
+    title: 'Azure at scale',
+    body: 'AKS platforms spanning 60+ services, lifted from 85% to 99% deployment success.',
+    color: 'var(--c-teal)',
+  },
+  {
+    title: 'Everything codified',
+    body: 'Terraform modules that took environment provisioning from 4 days down to 2 hours.',
+    color: 'var(--c-coral)',
+  },
+  {
+    title: 'Security in the pipeline',
+    body: 'OPA/Rego, Gatekeeper, SonarQube and Snyk gates preventing 95% of policy violations at PR time.',
+    color: 'var(--c-indigo)',
+  },
+  {
+    title: 'Cost kept honest',
+    body: 'InfraCost checks and right-sizing that cut £1,200/month of waste and 40% of agent spend.',
+    color: 'var(--c-amber)',
+  },
+];
 ---
 
-<section id="about" class="section-alt">
+<section id="about" class="band band-alt">
   <div class="container">
-    <div data-animate>
-      <p class="section-label">About</p>
-      <h2 class="section-heading">A bit about me</h2>
-      <div class="about-text">
+    <div class="about-top">
+      <div data-animate>
+        <p class="section-label">About</p>
+        <h2 class="section-heading">
+          Automate the boring.<br />
+          <span class="muted">Ship with confidence.</span>
+        </h2>
+      </div>
+      <div class="about-text" data-animate>
         <p>
-          DevOps engineer with 3+ years designing, automating, and operating cloud
-          infrastructure on Azure. I specialise in end-to-end CI/CD pipelines, Kubernetes
-          at scale (AKS), and Terraform-based IaC — with a focus on DevSecOps: policy-as-code,
-          cost controls, and security gates baked into every pipeline.
+          I'm a DevOps engineer at <strong>Accenture</strong> with 3+ years designing,
+          automating, and operating cloud infrastructure on Azure. My work sits where
+          CI/CD, Kubernetes, and infrastructure-as-code meet — and my bias is always
+          toward the boring outcome: predictable deploys, reproducible environments,
+          and a quiet on-call rotation.
         </p>
         <p>
-          At Accenture I've reduced release cycles by 45%, cut environment provisioning from
-          4&nbsp;days to 2&nbsp;hours, and operated AKS clusters across 60+ services at 99%
-          deployment success. I hold a degree in Electronics &amp; Communication Engineering
-          and am Microsoft certified in Azure (AZ-104 Administrator Associate).
+          I hold a degree in Electronics &amp; Communication Engineering and am
+          Microsoft certified in Azure (AZ-104, AZ-900).
         </p>
       </div>
     </div>
+
+    <ul class="proof-list" role="list">
+      {proof.map((p, i) => (
+        <li class="proof-point" data-animate style={`transition-delay: ${i * 0.06}s`}>
+          <span class="proof-chip" style={`background-color: ${p.color}`} aria-hidden="true"></span>
+          <div>
+            <h3 class="proof-title">{p.title}</h3>
+            <p class="proof-body">{p.body}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
   </div>
 </section>
 
 <style>
-.section-alt {
-  padding-block: var(--section-pad);
-  background-color: var(--color-bg-alt);
+.about-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.about-top .section-heading {
+  margin-bottom: 0;
 }
 
 .about-text {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-width: 62ch;
+  color: var(--color-text-muted);
   line-height: 1.75;
+}
+
+.about-text strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.proof-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.proof-point {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem;
+  background-color: var(--color-surface);
+  border: var(--bw-sm) solid var(--brutal-border);
+}
+
+.proof-chip {
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: 0.15rem;
+  border: var(--bw-sm) solid var(--brutal-border);
+}
+
+.proof-title {
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.proof-body {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .about-top { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .proof-list { grid-template-columns: 1fr; }
 }
 </style>

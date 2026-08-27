@@ -1,25 +1,47 @@
 /* ============================================================
-   Design Tokens
+   Design Tokens — neobrutalist / warm beige
+   Hard edges, thick borders, offset shadows with no blur.
    ============================================================ */
 
 :root {
+  /* Surfaces (warm beige — locked palette) */
   --color-bg:           #F4EFE6;
-  --color-bg-alt:       #ECE5D8;
+  --color-bg-alt:       #EEEAE1;
   --color-surface:      #FBF8F2;
-  --color-border:       #D9CFBD;
-  --color-text:         #262320;
-  --color-text-muted:   #575046;
+  --color-surface-warm: #F4F0E7;
+
+  /* Ink */
+  --color-text:         #2B2926;
+  --color-text-muted:   #5A5347;
+  --color-text-invert:  #FBF8F2;
+
+  /* Accent */
   --color-accent:       #9C6B4A;
   --color-accent-hover: #7E5238;
-  --color-accent-soft:  rgba(156, 107, 74, 0.12);
 
-  --font-sans: 'Inter Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+  /* Brutalist structure */
+  --brutal-border:      #2B2926;
+  --brutal-shadow:      #2B2926;
+  --bw:                 3px;   /* major border width */
+  --bw-sm:              2px;   /* nested border width */
 
-  /* Single content rail — every section aligns to the same left edge */
-  --content-width: 900px;
-  --section-pad: clamp(3.5rem, 7vw, 5.5rem);
-  --radius: 10px;
+  /* Category colors — flat blocks, used behind icons/numbers */
+  --c-coral:  #C08060;
+  --c-indigo: #59598F;
+  --c-amber:  #C0A050;
+  --c-teal:   #3A6A7A;
+  --c-rose:   #924653;
+  --c-lime:   #80A050;
+
+  --font-display: 'Outfit Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans:    'Inter Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+
+  --content-width: 1120px;
+  --section-pad: clamp(3.5rem, 7vw, 6rem);
+
+  /* Neobrutalism: no rounding, anywhere. */
+  --radius: 0;
 }
 
 /* ============================================================
@@ -55,7 +77,7 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
-  font-size: clamp(1rem, 0.96rem + 0.15vw, 1.1rem);
+  font-size: clamp(1rem, 0.96rem + 0.15vw, 1.05rem);
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -72,9 +94,8 @@ a:hover {
 }
 
 a:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline: var(--bw) solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 /* ============================================================
@@ -82,129 +103,181 @@ a:focus-visible {
    ============================================================ */
 
 h1, h2, h3, h4 {
-  line-height: 1.15;
-  font-weight: 600;
+  font-family: var(--font-display);
+  line-height: 1.08;
+  font-weight: 700;
   letter-spacing: -0.02em;
   overflow-wrap: break-word;
   color: var(--color-text);
 }
 
-h1 { font-size: clamp(2rem, 1.5rem + 2vw, 3rem); }
-h2 { font-size: clamp(1.6rem, 1.3rem + 1.1vw, 2.1rem); }
-h3 { font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem); }
+h1 { font-size: clamp(2.4rem, 1.7rem + 3vw, 4rem); }
+h2 { font-size: clamp(1.9rem, 1.4rem + 1.9vw, 2.9rem); }
+h3 { font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem); }
 
+/* Section eyebrow — a hard-edged label block */
 .section-label {
-  display: block;
+  display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-accent);
-  margin-bottom: 0.75rem;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: var(--bw-sm) solid var(--brutal-border);
+  padding: 0.3em 0.7em;
+  margin-bottom: 1.1rem;
 }
 
 .section-heading {
-  margin-bottom: 2.25rem;
-  max-width: 40ch;
+  margin-bottom: 2.5rem;
+  max-width: 34ch;
+}
+
+/* Second line of a two-part heading, de-emphasised */
+.section-heading .muted {
+  color: var(--color-text-muted);
+}
+
+.lede {
+  font-size: clamp(1.02rem, 0.98rem + 0.25vw, 1.15rem);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  max-width: 58ch;
 }
 
 /* ============================================================
-   Layout — one shared rail
+   Layout — full-bleed sections divided by hard rules
    ============================================================ */
 
 .container {
   width: 100%;
   max-width: var(--content-width);
   margin-inline: auto;
-  padding-inline: clamp(1.25rem, 5vw, 2.25rem);
+  padding-inline: clamp(1.25rem, 5vw, 3rem);
 }
 
 section {
   scroll-margin-top: 5rem;
 }
 
+/* Every band is separated by a thick rule, edge to edge. */
+.band {
+  padding-block: var(--section-pad);
+  border-bottom: var(--bw) solid var(--brutal-border);
+}
+
+.band-alt {
+  background-color: var(--color-bg-alt);
+}
+
 /* ============================================================
-   Buttons
+   Brutal primitives
+   ============================================================ */
+
+/* A hard-edged block: thick border + offset shadow, no blur. */
+.brutal {
+  background-color: var(--color-surface);
+  border: var(--bw) solid var(--brutal-border);
+  box-shadow: 6px 6px 0 var(--brutal-shadow);
+}
+
+/* Hover = the block presses into its own shadow.
+   Uses `transform` (not `translate`) so it composes with the
+   scroll-reveal below instead of fighting it for the same property. */
+.brutal-press {
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.brutal-press:hover {
+  box-shadow: 2px 2px 0 var(--brutal-shadow);
+  transform: translate(4px, 4px);
+}
+
+/* Flat colored square — holds a number or icon. */
+.brutal-chip {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  border: var(--bw) solid var(--brutal-border);
+  background-color: var(--chip-color, var(--color-accent));
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* ============================================================
+   Buttons — uppercase, tracked out, hard shadow
    ============================================================ */
 
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.45em;
-  padding: 0.65em 1.3em;
-  border-radius: var(--radius);
-  font-size: 0.9rem;
-  font-weight: 500;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.85em 1.5em;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
   text-decoration: none;
-  transition: color 0.15s, background-color 0.15s, border-color 0.15s, transform 0.15s;
   cursor: pointer;
-  border: 1.5px solid transparent;
   white-space: nowrap;
-}
-
-.btn:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
+  border: var(--bw) solid var(--brutal-border);
+  box-shadow: 4px 4px 0 var(--brutal-shadow);
+  transition: box-shadow 0.15s ease, transform 0.15s ease,
+              background-color 0.15s ease, color 0.15s ease;
 }
 
 .btn:hover {
-  transform: translateY(-1px);
+  box-shadow: 1px 1px 0 var(--brutal-shadow);
+  transform: translate(3px, 3px);
+}
+
+.btn:focus-visible {
+  outline: var(--bw) solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 .btn-primary {
-  background-color: var(--color-accent);
-  color: var(--color-surface);
-  border-color: var(--color-accent);
+  background-color: var(--color-text);
+  color: var(--color-text-invert);
 }
 
 .btn-primary:hover {
-  background-color: var(--color-accent-hover);
-  border-color: var(--color-accent-hover);
-  color: var(--color-surface);
+  background-color: var(--color-accent);
+  color: #fff;
 }
 
 .btn-outline {
-  background-color: transparent;
+  background-color: var(--color-surface);
   color: var(--color-text);
-  border-color: var(--color-border);
 }
 
 .btn-outline:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  background-color: var(--color-text);
+  color: var(--color-text-invert);
 }
 
 /* ============================================================
-   Tags (monospace chips)
+   Tags — square monospace chips
    ============================================================ */
 
 .tag {
   display: inline-block;
-  padding: 0.28em 0.7em;
-  border-radius: 6px;
+  padding: 0.25em 0.6em;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--bw-sm) solid var(--brutal-border);
   font-family: var(--font-mono);
-  font-size: 0.76rem;
-  color: var(--color-text-muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-text);
   white-space: nowrap;
-}
-
-/* ============================================================
-   Card
-   ============================================================ */
-
-.card {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  transition: border-color 0.2s, transform 0.2s;
-}
-
-.card:hover {
-  border-color: var(--color-accent);
-  transform: translateY(-2px);
 }
 
 /* ============================================================
@@ -214,13 +287,14 @@ section {
 
 .js [data-animate] {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  translate: 0 14px;
+  transition: opacity 0.45s ease, translate 0.45s ease,
+              transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .js [data-animate].visible {
   opacity: 1;
-  transform: none;
+  translate: none;
 }
 
 /* ============================================================
@@ -232,7 +306,7 @@ section {
 
   .js [data-animate] {
     opacity: 1;
-    transform: none;
+    translate: none;
     transition: none;
   }
 

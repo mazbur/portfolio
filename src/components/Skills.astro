@@ -2,62 +2,105 @@
 const skillGroups = [
   {
     category: 'Cloud (Azure)',
+    mark: 'AZ',
+    color: 'var(--c-teal)',
     tools: ['AKS', 'ACR', 'Key Vault', 'Event Grid/Hubs', 'Storage Accounts', 'Azure VMs', 'VNet', 'Private Endpoints'],
   },
-  { category: 'IaC & Containers', tools: ['Terraform', 'Helm', 'Docker', 'Kubernetes'] },
-  { category: 'CI/CD',            tools: ['Azure DevOps', 'Maven', 'Git'] },
-  { category: 'Observability',    tools: ['Application Insights', 'ELK Stack'] },
-  { category: 'DevSecOps',        tools: ['OPA/Rego', 'Gatekeeper', 'SonarQube', 'Snyk', 'InfraCost'] },
-  { category: 'Languages',        tools: ['Python', 'Bash/Shell', 'Linux (RHEL/Ubuntu)'] },
+  {
+    category: 'IaC & Containers',
+    mark: 'TF',
+    color: 'var(--c-coral)',
+    tools: ['Terraform', 'Helm', 'Docker', 'Kubernetes'],
+  },
+  {
+    category: 'CI/CD',
+    mark: 'CI',
+    color: 'var(--c-indigo)',
+    tools: ['Azure DevOps', 'GitHub Actions', 'Maven', 'Git'],
+  },
+  {
+    category: 'Observability',
+    mark: 'OB',
+    color: 'var(--c-amber)',
+    tools: ['Application Insights', 'ELK Stack'],
+  },
+  {
+    category: 'DevSecOps',
+    mark: 'SEC',
+    color: 'var(--c-rose)',
+    tools: ['OPA/Rego', 'Gatekeeper', 'SonarQube', 'Snyk', 'InfraCost'],
+  },
+  {
+    category: 'Languages & OS',
+    mark: '$_',
+    color: 'var(--c-lime)',
+    tools: ['Python', 'Bash/Shell', 'Linux (RHEL/Ubuntu)'],
+  },
 ];
 ---
 
-<section id="skills" class="section">
+<section id="skills" class="band">
   <div class="container">
     <div data-animate>
       <p class="section-label">Toolbox</p>
-      <h2 class="section-heading">Skills &amp; Technologies</h2>
+      <h2 class="section-heading">
+        One toolchain.<br />
+        <span class="muted">End to end.</span>
+      </h2>
     </div>
-    <div class="skills-grid">
-      {skillGroups.map(({ category, tools }, i) => (
-        <div class="skill-group card" data-animate style={`transition-delay: ${i * 0.05}s`}>
-          <p class="skill-category">{category}</p>
+    <ul class="skills-grid" role="list">
+      {skillGroups.map((group, i) => (
+        <li class="skill-group brutal brutal-press" data-animate style={`transition-delay: ${i * 0.05}s`}>
+          <span class="brutal-chip skill-mark" style={`--chip-color: ${group.color}`} aria-hidden="true">
+            {group.mark}
+          </span>
+          <h3 class="skill-category">{group.category}</h3>
           <div class="skill-tags">
-            {tools.map((tool) => <span class="tag">{tool}</span>)}
+            {group.tools.map((tool) => <span class="tag">{tool}</span>)}
           </div>
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   </div>
 </section>
 
 <style>
-.section {
-  padding-block: var(--section-pad);
-}
-
 .skills-grid {
+  list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
 }
 
 .skill-group {
-  padding: 1.35rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1.6rem 1.5rem;
+}
+
+.skill-mark {
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.1rem;
 }
 
 .skill-category {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-text);
-  margin-bottom: 0.9rem;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
 }
 
 .skill-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+  margin-top: auto;
+}
+
+@media (max-width: 940px) {
+  .skills-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .skills-grid { grid-template-columns: 1fr; }
 }
 </style>

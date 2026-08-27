@@ -1,38 +1,33 @@
 ---
+const metrics = [
+  { value: '45%',  label: 'Faster release cycles',  color: 'var(--c-coral)'  },
+  { value: '99%',  label: 'AKS deploy success',     color: 'var(--c-teal)'   },
+  { value: '2 hrs', label: 'To provision an env',   color: 'var(--c-indigo)' },
+  { value: '70%',  label: 'Fewer drift incidents',  color: 'var(--c-amber)'  },
+];
 ---
 
-<section id="home" class="hero">
-  <div class="container">
+<section id="home" class="hero band">
+  <div class="container hero-grid">
     <div class="hero-content" data-animate>
       <p class="hero-eyebrow">
         <span class="hero-status" aria-hidden="true"></span>
-        DevOps Engineer · Azure · IaC
+        Available for work
       </p>
-      <h1 class="hero-name">Tejas Mehta</h1>
-      <p class="hero-tagline">
-        I build resilient, automated cloud infrastructure. 3+ years on Azure —
-        cutting release cycles by <strong>45%</strong>, shrinking environment
-        provisioning from <strong>4 days to 2 hours</strong>, and running AKS at
-        <strong>99% deployment success</strong>.
+      <h1 class="hero-title">
+        Infrastructure<br />
+        <span class="hero-title-accent">as code.</span><br />
+        Deploys as routine.
+      </h1>
+      <p class="lede hero-lede">
+        I'm Tejas Mehta — a DevOps engineer with 3+ years on Azure, building
+        CI/CD pipelines, Terraform modules, and AKS platforms that teams can
+        actually trust.
       </p>
       <div class="hero-links">
         <a href="mailto:official.tejas27@outlook.com" class="btn btn-primary">
-          Get in Touch
+          Get in touch
         </a>
-        <a
-          href="https://github.com/YOUR_GITHUB"
-          class="btn btn-outline"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="GitHub profile (opens in new tab)"
-        >GitHub</a>
-        <a
-          href="https://linkedin.com/in/YOUR_LINKEDIN"
-          class="btn btn-outline"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="LinkedIn profile (opens in new tab)"
-        >LinkedIn</a>
         <a
           href="/resume.pdf"
           class="btn btn-outline"
@@ -41,62 +36,159 @@
         >Resume &darr;</a>
       </div>
     </div>
+
+    <div class="hero-panel brutal" data-animate>
+      <div class="hero-panel-bar">
+        <span class="hero-panel-title">impact.tf</span>
+        <span class="hero-panel-dots" aria-hidden="true">
+          <i></i><i></i><i></i>
+        </span>
+      </div>
+      <ul class="hero-metrics" role="list">
+        {metrics.map((m) => (
+          <li class="hero-metric">
+            <span class="hero-metric-bar" style={`background-color: ${m.color}`} aria-hidden="true"></span>
+            <div>
+              <p class="hero-metric-value">{m.value}</p>
+              <p class="hero-metric-label">{m.label}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
 </section>
 
 <style>
 .hero {
-  padding-block: clamp(3rem, 7vw, 5rem) var(--section-pad);
+  padding-block: clamp(3rem, 6vw, 4.5rem) var(--section-pad);
 }
 
-.hero-content {
-  max-width: 640px;
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
 }
+
+/* ---------- left ---------- */
 
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
   margin-bottom: 1.5rem;
-  padding: 0.35em 0.8em;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
+  padding: 0.35em 0.75em;
   background-color: var(--color-surface);
+  border: var(--bw-sm) solid var(--brutal-border);
 }
 
 .hero-status {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
-  background-color: #5F7A6B;
-  box-shadow: 0 0 0 3px rgba(95, 122, 107, 0.2);
+  background-color: var(--c-lime);
+  border: 1px solid var(--brutal-border);
 }
 
-.hero-name {
-  font-size: clamp(2.75rem, 2rem + 3.5vw, 4.5rem);
+.hero-title {
+  font-size: clamp(2.5rem, 1.6rem + 4vw, 4.4rem);
   letter-spacing: -0.035em;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.4rem;
 }
 
-.hero-tagline {
-  font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
-  color: var(--color-text-muted);
-  max-width: 560px;
+.hero-title-accent {
+  color: var(--color-accent);
+}
+
+.hero-lede {
   margin-bottom: 2.25rem;
-  line-height: 1.7;
-}
-
-.hero-tagline strong {
-  color: var(--color-text);
-  font-weight: 600;
 }
 
 .hero-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.65rem;
+  gap: 0.85rem;
+}
+
+/* ---------- right: metrics panel ---------- */
+
+.hero-panel {
+  box-shadow: 8px 8px 0 var(--brutal-shadow);
+}
+
+.hero-panel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2.85rem;
+  padding-inline: 0.9rem;
+  background-color: var(--color-text);
+  border-bottom: var(--bw) solid var(--brutal-border);
+}
+
+.hero-panel-title {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--color-text-invert);
+}
+
+.hero-panel-dots {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.hero-panel-dots i {
+  width: 9px;
+  height: 9px;
+  background-color: var(--color-text-invert);
+  opacity: 0.55;
+}
+
+.hero-metrics {
+  list-style: none;
+}
+
+.hero-metric {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.1rem;
+}
+
+.hero-metric + .hero-metric {
+  border-top: var(--bw-sm) solid var(--brutal-border);
+}
+
+.hero-metric-bar {
+  width: 0.7rem;
+  align-self: stretch;
+  min-height: 2.4rem;
+  border: var(--bw-sm) solid var(--brutal-border);
+}
+
+.hero-metric-value {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-metric-label {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-panel { max-width: 30rem; }
 }
 </style>

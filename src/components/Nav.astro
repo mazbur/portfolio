@@ -1,11 +1,10 @@
 ---
 const navLinks = [
-  { href: '/#about',      label: 'About' },
-  { href: '/#skills',     label: 'Skills' },
-  { href: '/#workflow',   label: 'Workflow' },
-  { href: '/#experience', label: 'Experience' },
-  { href: '/#projects',   label: 'Projects' },
-  { href: '/blog',        label: 'Blog' },
+  { href: '/#about',    label: 'About' },
+  { href: '/#skills',   label: 'Skills' },
+  { href: '/#workflow', label: 'Workflow' },
+  { href: '/#projects', label: 'Projects' },
+  { href: '/blog',      label: 'Blog' },
 ];
 ---
 
@@ -13,6 +12,7 @@ const navLinks = [
   <div class="container nav-inner">
     <a href="/" class="nav-logo" aria-label="Home">
       <span class="nav-mark">TM</span>
+      <span class="nav-wordmark">Tejas Mehta</span>
     </a>
     <nav aria-label="Main navigation">
       <ul class="nav-links" role="list">
@@ -30,87 +30,110 @@ const navLinks = [
   position: sticky;
   top: 0;
   z-index: 20;
-  background-color: color-mix(in srgb, var(--color-bg) 88%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  border-bottom: var(--bw) solid var(--brutal-border);
 }
 
 .nav-inner {
   display: flex;
   align-items: center;
   gap: 2rem;
-  padding-block: 0.85rem;
+  padding-block: 0.8rem;
 }
 
 .nav-logo {
   display: flex;
   align-items: center;
+  gap: 0.65rem;
   text-decoration: none;
   margin-right: auto;
+  color: var(--color-text);
 }
 
 .nav-mark {
-  display: inline-grid;
+  display: grid;
   place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 7px;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: var(--bw-sm) solid var(--brutal-border);
   background-color: var(--color-accent);
-  color: var(--color-surface);
+  color: #fff;
+  font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.02em;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
   transition: background-color 0.15s;
 }
 
 .nav-logo:hover .nav-mark {
-  background-color: var(--color-accent-hover);
+  background-color: var(--color-text);
+}
+
+.nav-wordmark {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .nav-links {
   display: flex;
   list-style: none;
-  gap: clamp(1rem, 2.5vw, 1.75rem);
+  gap: clamp(1rem, 2.4vw, 1.9rem);
 }
 
 .nav-links a {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text);
   text-decoration: none;
-  transition: color 0.15s;
+  padding-bottom: 2px;
+  border-bottom: var(--bw-sm) solid transparent;
+  transition: border-color 0.15s, color 0.15s;
 }
 
 .nav-links a:hover {
-  color: var(--color-text);
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
 }
 
 .nav-links a:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 4px;
-  border-radius: 2px;
+  outline: var(--bw-sm) solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 .nav-cta {
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
   color: var(--color-text);
   text-decoration: none;
-  padding: 0.4em 0.9em;
-  border: 1.5px solid var(--color-border);
-  border-radius: 8px;
-  transition: border-color 0.15s, color 0.15s;
+  padding: 0.5em 1em;
+  background-color: var(--color-surface);
+  border: var(--bw-sm) solid var(--brutal-border);
+  box-shadow: 3px 3px 0 var(--brutal-shadow);
   white-space: nowrap;
+  transition: box-shadow 0.15s, transform 0.15s, background-color 0.15s, color 0.15s;
 }
 
 .nav-cta:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  background-color: var(--color-text);
+  color: var(--color-text-invert);
+  box-shadow: 1px 1px 0 var(--brutal-shadow);
+  transform: translate(2px, 2px);
 }
 
-@media (max-width: 720px) {
+@media (max-width: 860px) {
   .nav-links { display: none; }
   .nav-inner { justify-content: space-between; }
+}
+
+@media (max-width: 420px) {
+  .nav-wordmark { display: none; }
 }
 </style>

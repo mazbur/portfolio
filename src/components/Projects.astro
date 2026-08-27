@@ -1,14 +1,16 @@
 ---
 const projects = [
   {
-    title: 'Terraform Drift Detection Tool',
+    title: 'Terraform Drift Detection',
+    color: 'var(--c-coral)',
     description:
-      'Python tool that polls Terraform state and compares it against live Azure resources, alerting on configuration drift before it becomes an incident. Reduced drift incidents 70% and prevented two critical outages.',
+      'Python tool that polls Terraform state and compares it against live Azure resources, alerting on configuration drift before it becomes an incident. Cut drift incidents 70% and prevented two critical outages.',
     tags: ['Python', 'Terraform', 'Azure', 'Azure DevOps'],
     links: [{ label: 'GitHub', href: 'https://github.com/YOUR_GITHUB/terraform-drift-detector' }],
   },
   {
     title: 'Policy-as-Code Platform',
+    color: 'var(--c-indigo)',
     description:
       'OPA/Rego policy library with a Gatekeeper admission controller enforcing enterprise compliance on AKS. Prevents 95% of policy violations at PR time and generates auditable compliance reports.',
     tags: ['OPA/Rego', 'Gatekeeper', 'Kubernetes', 'Azure DevOps'],
@@ -16,39 +18,44 @@ const projects = [
   },
   {
     title: 'This Portfolio',
+    color: 'var(--c-teal)',
     description:
-      'Minimal static site built with Astro, hosted on private S3 behind CloudFront. Infrastructure as code with Terraform; zero long-lived AWS keys via GitHub Actions OIDC. Initial payload under 100 KB.',
+      'Static Astro site on a private S3 bucket behind CloudFront. Infrastructure fully described in Terraform; zero long-lived AWS keys thanks to GitHub Actions OIDC. Initial payload under 100 KB.',
     tags: ['Astro', 'Terraform', 'AWS', 'GitHub Actions'],
-    links: [{ label: 'GitHub', href: 'https://github.com/YOUR_GITHUB/portfolio' }],
+    links: [{ label: 'GitHub', href: 'https://github.com/mazbur/portfolio' }],
   },
 ];
 ---
 
-<section id="projects" class="section-alt">
+<section id="projects" class="band">
   <div class="container">
     <div data-animate>
       <p class="section-label">Portfolio</p>
-      <h2 class="section-heading">Projects &amp; Highlights</h2>
+      <h2 class="section-heading">
+        Things I've built.<br />
+        <span class="muted">And why they mattered.</span>
+      </h2>
     </div>
     <div class="projects-grid">
       {projects.map((project, i) => (
-        <article class="project-card card" data-animate style={`transition-delay: ${i * 0.07}s`}>
-          <div class="project-body">
+        <article class="project-card brutal brutal-press" data-animate style={`transition-delay: ${i * 0.07}s`}>
+          <span class="project-bar" style={`background-color: ${project.color}`} aria-hidden="true"></span>
+          <div class="project-inner">
             <h3 class="project-title">{project.title}</h3>
             <p class="project-desc">{project.description}</p>
             <div class="project-tags">
               {project.tags.map((tag) => <span class="tag">{tag}</span>)}
             </div>
+            {project.links.length > 0 && (
+              <div class="project-links">
+                {project.links.map(({ label, href }) => (
+                  <a href={href} target="_blank" rel="noopener noreferrer" class="project-link">
+                    {label} &rarr;
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
-          {project.links.length > 0 && (
-            <div class="project-links">
-              {project.links.map(({ label, href }) => (
-                <a href={href} target="_blank" rel="noopener noreferrer" class="project-link">
-                  {label} &rarr;
-                </a>
-              ))}
-            </div>
-          )}
         </article>
       ))}
     </div>
@@ -56,38 +63,38 @@ const projects = [
 </section>
 
 <style>
-.section-alt {
-  padding-block: var(--section-pad);
-  background-color: var(--color-bg-alt);
-}
-
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
 }
 
 .project-card {
-  padding: 1.6rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1.1rem;
+  overflow: hidden;
 }
 
-.project-body {
+/* Flat color strip across the top of the card */
+.project-bar {
+  height: 0.7rem;
+  border-bottom: var(--bw) solid var(--brutal-border);
+}
+
+.project-inner {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.8rem;
+  padding: 1.5rem 1.4rem;
+  flex: 1;
 }
 
 .project-title {
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-size: 1.15rem;
 }
 
 .project-desc {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--color-text-muted);
   line-height: 1.6;
 }
@@ -95,24 +102,35 @@ const projects = [
 .project-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: 0.4rem;
+  margin-top: auto;
 }
 
 .project-links {
   display: flex;
   gap: 1rem;
   padding-top: 0.9rem;
-  border-top: 1px solid var(--color-border);
+  border-top: var(--bw-sm) solid var(--brutal-border);
 }
 
 .project-link {
-  font-size: 0.83rem;
-  font-weight: 500;
-  color: var(--color-accent);
-  transition: color 0.15s;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text);
 }
 
 .project-link:hover {
-  color: var(--color-accent-hover);
+  color: var(--color-accent);
+}
+
+@media (max-width: 1000px) {
+  .projects-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .projects-grid { grid-template-columns: 1fr; }
 }
 </style>
