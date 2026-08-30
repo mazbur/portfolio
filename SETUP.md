@@ -6,8 +6,8 @@ your own domain.
 - [1. Run it locally](#1-run-it-locally)
 - [2. Fill in your details](#2-fill-in-your-details)
 - [3. Add the missing files](#3-add-the-missing-files)
-- [4. Provision AWS with Terraform](#4-provision-aws-with-terraform)
-- [5. Point your domain at AWS](#5-point-your-domain-at-aws)
+- [4. Get a Cloudflare API token](#4-get-a-cloudflare-api-token)
+- [5. Provision everything with Terraform](#5-provision-everything-with-terraform)
 - [6. Wire up GitHub Actions](#6-wire-up-github-actions)
 - [7. Deploy](#7-deploy)
 - [Publishing a blog post](#publishing-a-blog-post)
@@ -68,7 +68,7 @@ Two values still need you:
 
 | Value | Action |
 |---|---|
-| `url` | Replace with the domain you actually register (§5). |
+| `url` | Replace with your registered domain. |
 | `linkedin` | Set to `'https://linkedin.com/in/<your-handle>'`. |
 
 Any social link left as `null` is **dropped everywhere** rather than rendered as
@@ -107,14 +107,45 @@ want something other than the default.
 
 ---
 
-## 4. Provision AWS with Terraform
+## 4. Get a Cloudflare API token
 
-**Requires** Terraform ≥ 1.9 and AWS credentials with permission to create S3,
-CloudFront, ACM, Route 53, and IAM resources.
+DNS lives on Cloudflare, so Terraform needs a token to manage records there.
 
-The stack is: **private S3 bucket** (no public access) → **CloudFront** with
-Origin Access Control → **ACM** certificate → **Route 53** DNS, plus an **IAM
-role for GitHub Actions OIDC** so no long-lived AWS keys ever exist.
+**Cloudflare Registrar domains must use Cloudflare nameservers** — third-party
+nameservers such as Route 53 are only possible by transferring the domain to
+another registrar ([Cloudflare Registrar FAQ][cf-faq]). So there is no Route 53
+hosted zone in this stack: Cloudflare is authoritative and points at CloudFront.
+
+[cf-faq]: https://developers.cloudflare.com/registrar/faq/
+
+1. Cloudflare dashboard → **Manage Account → API Tokens → Create Token**
+2. Start from **Edit zone DNS**
+3. Under *Zone Resources*, scope it to **this one domain** — not all zones
+4. Create, and copy the token (shown once)
+
+Permissions needed: **Zone → DNS → Edit**, nothing more.
+
+Export it. Terraform's Cloudflare provider reads this variable directly, so the
+token never lands in `terraform.tfvars` or in state:
+
+```bash
+export CLOUDFLARE_API_TOKEN="your-token-here"
+```
+
+You also need the **zone ID**: dashboard → your domain → **Overview**, in the
+**API** panel on the right. It's 32 hex characters. Copy the *zone* ID, not the
+account ID above it.
+
+---
+
+## 5. Provision everything with Terraform
+
+**Requires** Terraform ≥ 1.9, AWS credentials able to create S3, CloudFront,
+ACM and IAM resources, and the Cloudflare token from §4.
+
+The stack: **private S3 bucket** (no public access) → **CloudFront** with
+Origin Access Control → **ACM** certificate validated via **Cloudflare DNS**,
+plus an **IAM role for GitHub Actions OIDC** so no long-lived AWS keys exist.
 
 ```bash
 cd terraform
@@ -124,14 +155,16 @@ cp terraform.tfvars.example terraform.tfvars
 Edit `terraform.tfvars`:
 
 ```hcl
-domain_name  = "tejasmehta.com"      # apex domain, no www, no trailing dot
-project_name = "portfolio"
-aws_region   = "us-east-1"
-github_repo  = "mazbur/portfolio"    # owner/repo — scopes who can assume the role
-www_redirect = true                  # true = www redirects to apex
+domain_name        = "tejasmehta.dev"   # apex domain, no www, no trailing dot
+project_name       = "portfolio"
+aws_region         = "us-east-1"
+github_repo        = "mazbur/portfolio" # owner/repo — scopes who may assume the role
+www_redirect       = true               # true = www redirects to apex
+cloudflare_zone_id = "0123...cdef"      # 32 hex chars, from §4
 ```
 
-`terraform.tfvars` is gitignored. **Never commit it.**
+`terraform.tfvars` is gitignored. **Never commit it.** The API token is not in
+this file by design — it stays an environment variable.
 
 ```bash
 terraform init
@@ -139,40 +172,37 @@ terraform plan      # review before applying
 terraform apply
 ```
 
-> **`apply` will appear to hang at the ACM certificate.** This is expected —
-> validation cannot finish until your registrar is using Route 53's
-> nameservers, which is the next step. If it times out, complete §5 and re-run
-> `terraform apply`.
+This is now a **single apply with no manual DNS step**. Terraform creates the
+certificate, writes the validation records into Cloudflare, waits for ACM to
+observe them, then builds the distribution. Validation typically completes in
+1–5 minutes.
 
-The ACM certificate is created in `us-east-1` regardless of `aws_region`, because
-CloudFront only accepts certificates from that region.
+Two details worth knowing:
+
+- The ACM certificate is created in `us-east-1` regardless of `aws_region`,
+  because CloudFront only accepts certificates from that region.
+- Every Cloudflare record is created **DNS-only** (`proxied = false`).
+  Proxying would put Cloudflare's CDN in front of CloudFront — two CDNs doing
+  the same job, an extra TLS hop, and CloudFront no longer seeing the real
+  client IP. If you ever flip the orange cloud on in the dashboard, Terraform
+  will revert it on the next apply.
+
+Verify once applied:
+
+```bash
+terraform output dns_records
+dig +short tejasmehta.dev          # should resolve to CloudFront IPs
+curl -sI https://tejasmehta.dev | head -1
+```
 
 ### Optional: remote state
 
 For a solo project local state is fine. To share or protect it, uncomment the
 `backend "s3"` block in `terraform/versions.tf` and run `terraform init` again.
 
----
-
-## 5. Point your domain at AWS
-
-Register a domain if you haven't (Route 53, Namecheap, Cloudflare — any
-registrar works). Then get the nameservers Terraform created:
-
-```bash
-terraform output route53_nameservers
-```
-
-Set those four nameservers at your registrar, replacing any existing ones.
-
-Propagation usually takes 15–60 minutes and can take up to 48 hours. Check with:
-
-```bash
-dig +short NS tejasmehta.com
-```
-
-Once they resolve, ACM validation completes on its own. Re-run
-`terraform apply` if it had timed out.
+Note that `terraform/.terraform.lock.hcl` **is** committed — it pins the aws and
+cloudflare provider versions so every machine and CI run resolves identical
+builds.
 
 ---
 
@@ -238,8 +268,8 @@ aws cloudfront create-invalidation \
 - [ ] `url` and `linkedin` set in `src/site.ts`
 - [ ] `public/resume.pdf` and `public/og-image.png` added
 - [ ] Certification years + Credly URLs filled in
-- [ ] `terraform apply` completed, certificate issued
-- [ ] Registrar using Route 53 nameservers
+- [ ] `CLOUDFLARE_API_TOKEN` exported and `cloudflare_zone_id` set
+- [ ] `terraform apply` completed, certificate issued, DNS resolving
 - [ ] Three GitHub Actions *variables* set
 - [ ] `develop` merged into `main`
 
@@ -317,7 +347,7 @@ src/
     rss.xml.ts          Generated feed
     robots.txt.ts       Generated; sitemap URL tracks site.ts
   styles/global.css     Design tokens + brutalist primitives
-terraform/              S3, CloudFront, ACM, Route 53, IAM OIDC
+terraform/              S3, CloudFront, ACM, Cloudflare DNS, IAM OIDC
 .github/workflows/      ci.yml (PR checks), deploy.yml (push to main)
 ```
 
@@ -346,8 +376,10 @@ present and `pubDate` is a valid date.
 **A new post isn't showing.** Is `draft` still `true`? Does the filename start
 with `_`? Both hide it from production.
 
-**`terraform apply` hangs on the certificate.** Your registrar isn't using
-Route 53's nameservers yet. Complete §5, then re-run apply.
+**`terraform apply` hangs on the certificate.** ACM can't see the validation
+records. Check the token has *Zone → DNS → Edit* on this zone, that
+`cloudflare_zone_id` is the zone (not account) ID, and that the `_acme`-style
+CNAMEs exist in the Cloudflare dashboard and are grey-clouded, not orange.
 
 **CloudFront serves a stale page.** Invalidate manually:
 ```bash

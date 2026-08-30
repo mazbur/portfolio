@@ -12,7 +12,9 @@ terraform/*.tfstate
 terraform/*.tfstate.backup
 terraform/crash.log
 terraform/terraform.tfvars
-.terraform.lock.hcl
+
+# .terraform.lock.hcl is deliberately NOT ignored — committing it pins provider
+# versions so every machine and CI run resolves the same aws/cloudflare builds.
 
 # Environment
 .env

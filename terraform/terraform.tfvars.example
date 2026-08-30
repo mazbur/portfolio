@@ -6,3 +6,12 @@ project_name = "portfolio"
 aws_region   = "us-east-1"
 github_repo  = "YOUR_GITHUB_USERNAME/portfolio"
 www_redirect = true
+
+# Cloudflare zone ID — dashboard -> your domain -> Overview -> API section.
+# 32 hex characters. This is the ZONE id, not the account id.
+cloudflare_zone_id = "0123456789abcdef0123456789abcdef"
+
+# The Cloudflare API token is NOT set here. Export it instead so it never
+# lands in a file or in Terraform state:
+#   export CLOUDFLARE_API_TOKEN="..."
+
