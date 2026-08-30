@@ -197,8 +197,59 @@ curl -sI https://tejasmehta.dev | head -1
 
 ### Optional: remote state
 
-For a solo project local state is fine. To share or protect it, uncomment the
-`backend "s3"` block in `terraform/versions.tf` and run `terraform init` again.
+State lives in `terraform/terraform.tfstate` on your machine, which is gitignored
+and fine for a solo project. Move it to S3 if you want to run `apply` from more
+than one machine, from CI, or want the state file backed up.
+
+**Terraform cannot create the bucket that stores its own state**, so this is a
+one-time manual bootstrap — the only click-ops in the whole setup:
+
+```bash
+# Bucket names are globally unique; suffixing the account ID avoids collisions.
+BUCKET="portfolio-tfstate-$(aws sts get-caller-identity --query Account --output text)"
+
+aws s3api create-bucket --bucket "$BUCKET" --region us-east-1
+
+# Versioning matters here: it is how you recover from a corrupted or
+# half-written state file.
+aws s3api put-bucket-versioning --bucket "$BUCKET" \
+  --versioning-configuration Status=Enabled
+
+aws s3api put-public-access-block --bucket "$BUCKET" \
+  --public-access-block-configuration \
+  "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
+
+aws s3api put-bucket-encryption --bucket "$BUCKET" \
+  --server-side-encryption-configuration \
+  '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+
+echo "$BUCKET"
+```
+
+> Outside `us-east-1`, `create-bucket` also needs
+> `--create-bucket-configuration LocationConstraint=<region>`.
+
+Then uncomment the `backend "s3"` block in `terraform/versions.tf`, set `bucket`
+to the name printed above, and migrate:
+
+```bash
+terraform init -migrate-state    # offers to copy local state into S3
+```
+
+Terraform asks for confirmation, copies the state up, and every later command
+uses S3. Keep the local `terraform.tfstate` around until you have confirmed a
+`terraform plan` works against the remote backend.
+
+**No DynamoDB lock table is needed.** `use_lockfile = true` uses S3-native
+locking, which supersedes the old `dynamodb_table` argument — HashiCorp has
+[deprecated that][tf-s3-backend] and will remove it in a future minor version.
+S3 locking requires Terraform >= 1.11.
+
+[tf-s3-backend]: https://developer.hashicorp.com/terraform/language/backend/s3
+
+The state file contains every resource attribute in plaintext, so treat the
+bucket as sensitive: keep it private (the commands above do), and never make it
+a public website bucket.
 
 Note that `terraform/.terraform.lock.hcl` **is** committed — it pins the aws and
 cloudflare provider versions so every machine and CI run resolves identical
