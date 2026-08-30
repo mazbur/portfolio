@@ -18,6 +18,41 @@ resource "aws_s3_bucket_versioning" "site" {
   }
 }
 
+# Versioning is on so a bad deploy can be rolled back, but `aws s3 sync --delete`
+# in the deploy workflow means every push leaves behind noncurrent versions and
+# delete markers. Without expiry those accumulate forever.
+resource "aws_s3_bucket_lifecycle_configuration" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  # Lifecycle rules operate on versions, so versioning must settle first.
+  depends_on = [aws_s3_bucket_versioning.site]
+
+  rule {
+    id     = "expire-noncurrent-versions"
+    status = "Enabled"
+
+    # Applies to every object in the bucket.
+    filter {}
+
+    # Keep a month of history — long enough to roll back a bad deploy,
+    # short enough that storage stays flat.
+    noncurrent_version_expiration {
+      noncurrent_days = 30
+    }
+
+    # Once every version of a deleted object has expired, drop the leftover
+    # delete marker too, otherwise the bucket fills with tombstones.
+    expiration {
+      expired_object_delete_marker = true
+    }
+
+    # Reclaim storage from uploads that failed partway through.
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "site" {
   bucket = aws_s3_bucket.site.id
   rule {
