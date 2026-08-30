@@ -8,19 +8,18 @@
 
 export const site = {
   /** Canonical origin, no trailing slash. Used for canonical URLs + sitemap. */
-  url: 'https://tejasmehta.com', // TODO: replace with your registered domain
-
+  url: 'https://tejasmehta.dev',
   name: 'Tejas Mehta',
   role: 'DevOps Engineer',
   title: 'Tejas Mehta — DevOps Engineer · Azure Cloud · IaC',
   description:
-    'DevOps engineer with 3+ years in Azure Cloud, CI/CD automation, and Terraform IaC. Reduced release cycles 45%, environment provisioning from 4 days to 2 hours.',
+    'DevOps engineer with 3+ years in Azure Cloud, Kubernetes, CI/CD automation, and Terraform.',
 
   email: 'official.tejas27@outlook.com',
 
   /** Profile URLs. Leave a value as `null` to hide that link everywhere. */
   github: 'https://github.com/mazbur',
-  linkedin: null as string | null, // TODO: 'https://linkedin.com/in/<your-handle>'
+  linkedin: 'https://linkedin.com/in/tejas-mehta-22393316b',
 
   /** This repository — linked from Projects and the footer. */
   repo: 'https://github.com/mazbur/portfolio',
@@ -35,9 +34,14 @@ export type SocialLink = { label: string; href: string };
  * Profile links, with any unset (`null`) entries dropped so components never
  * render a dead link to a placeholder handle.
  */
-export const socialLinks: SocialLink[] = (
-  [
-    { label: 'GitHub', href: site.github },
-    { label: 'LinkedIn', href: site.linkedin },
-  ] satisfies { label: string; href: string | null }[]
-).filter((l): l is SocialLink => Boolean(l.href));
+// Annotated (not `satisfies`) on purpose: `site` is `as const`, so `satisfies`
+// would keep each href at its literal type and the type guard below could not
+// narrow to SocialLink. The annotation widens href to `string | null` first.
+const profiles: { label: string; href: string | null }[] = [
+  { label: 'GitHub', href: site.github },
+  { label: 'LinkedIn', href: site.linkedin },
+];
+
+export const socialLinks: SocialLink[] = profiles.filter(
+  (l): l is SocialLink => Boolean(l.href),
+);

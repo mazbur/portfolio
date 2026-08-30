@@ -9,21 +9,28 @@ const certifications: {
   color: string;
   verifyUrl: string | null;
 }[] = [
+  { name: 'Azure Devops Expert',
+    level: 'AZ-400',
+    year: '2026',
+    issuer: 'Microsoft',
+    color: 'var(--c-violet)',
+    verifyUrl: 'https://learn.microsoft.com/api/credentials/share/en-us/TejasMehta-1105/7974E79D5CBE2955?sharingId=884CD9AB1CFBEA19'
+  },
   {
     name: 'Azure Administrator Associate',
     level: 'AZ-104',
-    year: null,
+    year: '2026',
     issuer: 'Microsoft',
     color: 'var(--c-teal)',
-    verifyUrl: null,
+    verifyUrl: 'https://learn.microsoft.com/api/credentials/share/en-us/TejasMehta-1105/FC88E500CF05BBB2?sharingId=884CD9AB1CFBEA19',
   },
   {
-    name: 'Azure Fundamentals',
-    level: 'AZ-900',
-    year: null,
-    issuer: 'Microsoft',
+    name: 'AWS Solutions Architect Associate',
+    level: 'SAA-003',
+    year: '2026',
+    issuer: 'AWS',
     color: 'var(--c-indigo)',
-    verifyUrl: null,
+    verifyUrl: 'http://credly.com/badges/2ca661b4-47f0-485f-9997-f2925969920d/public_url',
   },
 ];
 ---
@@ -70,9 +77,8 @@ const certifications: {
 .cert-grid {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
   gap: 1.5rem;
-  max-width: 46rem;
 }
 
 .cert-card {
@@ -81,6 +87,9 @@ const certifications: {
   grid-template-areas:
     'chip body'
     'verify verify';
+  /* Body row absorbs slack so the verify rule aligns across cards of
+     differing title length. */
+  grid-template-rows: 1fr auto;
   align-items: start;
   gap: 1.1rem;
   padding: 1.5rem 1.4rem;
