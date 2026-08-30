@@ -18,9 +18,13 @@ output "github_actions_role_arn" {
   value       = aws_iam_role.github_actions.arn
 }
 
-output "route53_nameservers" {
-  description = "Update your domain registrar to use these nameservers"
-  value       = aws_route53_zone.site.name_servers
+output "dns_records" {
+  description = "DNS records Terraform manages in Cloudflare (for verification)"
+  value = {
+    apex   = cloudflare_dns_record.apex.name
+    www    = cloudflare_dns_record.www.name
+    target = aws_cloudfront_distribution.site.domain_name
+  }
 }
 
 output "acm_certificate_arn" {
